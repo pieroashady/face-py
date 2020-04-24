@@ -10,20 +10,22 @@ from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # dapatkan nama file dan extensinya
+
+
 def allowed_file(filename):
-	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload', methods=['POST'])
 def Upload():
     name = request.form['name']
     nik = request.form['nik']
-    
 
     if 'image_url' not in request.files:
         response = jsonify({'message': 'tidak ada gambar'})
         response.status_code = 400
         return response
-    
+
     file = request.files['image_url']
     if file == '':
         response = jsonify({'message': 'gambar belum di upload'})
@@ -44,13 +46,13 @@ def Upload():
                 for i in image_url:
                     data.write(i)
         data = {
-                'status': 200,
-                'message': 'Record inserted successfuly',
-                'data' : {
-                    'nik': nik,
-                    'name': name
-                }
+            'status': 200,
+            'message': 'Record inserted successfuly',
+            'data': {
+                'nik': nik,
+                'name': name
             }
+        }
     # else :
     #     data = {
     #         'status': 400,
@@ -58,10 +60,11 @@ def Upload():
     #     }
         return jsonify(data)
 
+
 @app.route('/facereco', methods=['POST'])
 def Facereco():
     file = request.files['image_url']
-        
+
     if file == '':
         response = jsonify({'message': 'gambar belum di upload'})
         response.status_code = 400
@@ -77,5 +80,7 @@ def Facereco():
         }
     return jsonify(response)
 
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, port=port)
